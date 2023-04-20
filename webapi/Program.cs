@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
+const string CorsAllowLocalhost = "CorsAllowLocalhost";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,6 +21,15 @@ builder.Services.AddDbContext<webapi.OptnDbContext>(opt =>
         .EnableDetailedErrors();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CorsAllowLocalhost,
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:3333");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,6 +37,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(CorsAllowLocalhost);
 }
 
 app.UseHttpsRedirection();
